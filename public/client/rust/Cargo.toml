@@ -1,0 +1,22 @@
+[package]
+name = "s5client"
+version = "1.0.0"
+edition = "2021"
+description = "S5 Tunnel lightweight client: local SOCKS5 over WebSocket (VLESS)"
+
+[[bin]]
+name = "s5client"
+path = "src/main.rs"
+
+[dependencies]
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "net", "io-util"] }
+tokio-tungstenite = { version = "0.26", features = ["rustls-tls-webpki-roots"] }
+# rustls needs exactly one crypto provider; pick `ring` (pure Rust build, no cmake needed)
+rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12", "logging"] }
+futures-util = { version = "0.3", default-features = false, features = ["sink", "std"] }
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+strip = true
